@@ -98,10 +98,10 @@ PrivateData = @{
         # Tags = @()
 
         # A URL to the license for this module.
-        # LicenseUri = ''
+        # LicenseUri = 'https://github.com/samtmagee/Get-WinVer/blob/main/LICENSE.md'
 
         # A URL to the main website for this project.
-        # ProjectUri = ''
+        # ProjectUri = 'https://github.com/samtmagee/Get-WinVer/'
 
         # A URL to an icon representing this module.
         # IconUri = ''
