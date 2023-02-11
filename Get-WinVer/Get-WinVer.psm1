@@ -38,69 +38,49 @@ function Get-WinVer {
 
         Invoke-Command -Credential $Credential -ComputerName $ComputerName -ScriptBlock {
             $CurrentComputerName = (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\ComputerName\ComputerName").ComputerName
+            $displayversion = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").DisplayVersion
             $major = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").CurrentMajorVersionNumber
             $version = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").ReleaseId
             $build = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").CurrentBuildNumber
             $release = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").UBR
             $edition = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").EditionID
             $installationtype = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").InstallationType
-            $productname = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").ProductName
-
-            $WinVer = if ($installationtype -eq "Server") {
-                "$productname (OS Build $build.$release)"
-            }
-            elseif ($installationtype -eq "Client") {
-                "Windows $major $edition (OS Build $build.$release)"
-            }
-            else {
-                "Not Windows Server or Client OS."
-            }
 
             return [pscustomobject]@{
                 'ComputerName'     = $CurrentComputerName
+                'DisplayMajor'     = $(if ($build.length -eq 5 -and $build[0] -eq '2') { '11' } elseif ($build.length -eq 5 -and $build[0] -eq '1') { '10' })
+                'DisplayVersion'   = $displayversion
                 'Major'            = $major
                 'Version'          = $version
                 'Build'            = $build
                 'Release'          = $release
                 'Edition'          = $edition
                 'InstallationType' = $installationtype
-                'ProductName'      = $productname
-                'WinVer'           = $WinVer
             }
-        } | Select-Object -Property ComputerName, Major, Version, Build, Release, Edition, InstallationType, ProductName, WinVer
-    }
+        } | Select-Object -Property ComputerName, DisplayMajor, DisplayVersion, Major, Version, Build, Release, Edition, InstallationType
+        }
     else {
         Invoke-Command -ScriptBlock {
             $CurrentComputerName = (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\ComputerName\ComputerName").ComputerName
+            $displayversion = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").DisplayVersion
             $major = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").CurrentMajorVersionNumber
             $version = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").ReleaseId
             $build = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").CurrentBuildNumber
             $release = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").UBR
             $edition = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").EditionID
             $installationtype = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").InstallationType
-            $productname = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").ProductName
-
-            $WinVer = if ($installationtype -eq "Server") {
-                "$productname (OS Build $build.$release)"
-            }
-            elseif ($installationtype -eq "Client") {
-                "Windows $major $edition (OS Build $build.$release)"
-            }
-            else {
-                "Not Windows Server or Client OS."
-            }
 
             return [pscustomobject]@{
                 'ComputerName'     = $CurrentComputerName
+                'DisplayMajor'     = $(if ($build.length -eq 5 -and $build[0] -eq '2') { '11' } elseif ($build.length -eq 5 -and $build[0] -eq '1') { '10' })
+                'DisplayVersion'   = $displayversion
                 'Major'            = $major
                 'Version'          = $version
                 'Build'            = $build
                 'Release'          = $release
                 'Edition'          = $edition
                 'InstallationType' = $installationtype
-                'ProductName'      = $productname
-                'WinVer'           = $WinVer
             }
-        } | Select-Object -Property ComputerName, Major, Version, Build, Release, Edition, InstallationType, ProductName, WinVer
+        } | Select-Object -Property ComputerName, DisplayMajor, DisplayVersion, Major, Version, Build, Release, Edition, InstallationType
     }
 }
