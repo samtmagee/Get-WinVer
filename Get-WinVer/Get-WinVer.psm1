@@ -23,8 +23,7 @@
 #>
 
 
-function Get-WinVer
-{
+function Get-WinVer {
     [CmdletBinding()]
     Param
     (
@@ -35,34 +34,73 @@ function Get-WinVer
         [pscredential]
         $Credential
     )
-    Invoke-Command -Credential $Credential -ComputerName $ComputerName -ScriptBlock {
-        $CurrentComputerName = (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\ComputerName\ComputerName").ComputerName
-        $major = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").CurrentMajorVersionNumber
-        $version = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").ReleaseId
-        $build = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").CurrentBuildNumber
-        $release = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").UBR
-        $edition = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").EditionID
-        $installationtype = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").InstallationType
-        $productname = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").ProductName
+    if ($ComputerName -ne "localhost") {
 
-        $WinVer = if ($installationtype -eq "Server") {
-            "$productname (OS Build $build.$release)"
-        } elseif ($installationtype -eq "Client") {
-            "Windows $major $edition (OS Build $build.$release)"
-        } else {
-            "Not Windows Server or Client OS."
-        }
+        Invoke-Command -Credential $Credential -ComputerName $ComputerName -ScriptBlock {
+            $CurrentComputerName = (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\ComputerName\ComputerName").ComputerName
+            $major = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").CurrentMajorVersionNumber
+            $version = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").ReleaseId
+            $build = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").CurrentBuildNumber
+            $release = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").UBR
+            $edition = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").EditionID
+            $installationtype = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").InstallationType
+            $productname = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").ProductName
 
-        return [pscustomobject]@{
-            'ComputerName' = $CurrentComputerName
-            'Major' = $major
-            'Version' = $version
-            'Build' = $build
-            'Release' = $release
-            'Edition' = $edition
-            'InstallationType' = $installationtype
-            'ProductName' = $productname
-            'WinVer' = $WinVer
-        }
-    } | Select-Object -Property ComputerName, Major, Version, Build, Release, Edition, InstallationType, ProductName, WinVer
+            $WinVer = if ($installationtype -eq "Server") {
+                "$productname (OS Build $build.$release)"
+            }
+            elseif ($installationtype -eq "Client") {
+                "Windows $major $edition (OS Build $build.$release)"
+            }
+            else {
+                "Not Windows Server or Client OS."
+            }
+
+            return [pscustomobject]@{
+                'ComputerName'     = $CurrentComputerName
+                'Major'            = $major
+                'Version'          = $version
+                'Build'            = $build
+                'Release'          = $release
+                'Edition'          = $edition
+                'InstallationType' = $installationtype
+                'ProductName'      = $productname
+                'WinVer'           = $WinVer
+            }
+        } | Select-Object -Property ComputerName, Major, Version, Build, Release, Edition, InstallationType, ProductName, WinVer
+    }
+    else {
+        Invoke-Command -ScriptBlock {
+            $CurrentComputerName = (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\ComputerName\ComputerName").ComputerName
+            $major = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").CurrentMajorVersionNumber
+            $version = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").ReleaseId
+            $build = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").CurrentBuildNumber
+            $release = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").UBR
+            $edition = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").EditionID
+            $installationtype = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").InstallationType
+            $productname = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").ProductName
+
+            $WinVer = if ($installationtype -eq "Server") {
+                "$productname (OS Build $build.$release)"
+            }
+            elseif ($installationtype -eq "Client") {
+                "Windows $major $edition (OS Build $build.$release)"
+            }
+            else {
+                "Not Windows Server or Client OS."
+            }
+
+            return [pscustomobject]@{
+                'ComputerName'     = $CurrentComputerName
+                'Major'            = $major
+                'Version'          = $version
+                'Build'            = $build
+                'Release'          = $release
+                'Edition'          = $edition
+                'InstallationType' = $installationtype
+                'ProductName'      = $productname
+                'WinVer'           = $WinVer
+            }
+        } | Select-Object -Property ComputerName, Major, Version, Build, Release, Edition, InstallationType, ProductName, WinVer
+    }
 }
