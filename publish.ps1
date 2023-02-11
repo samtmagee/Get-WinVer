@@ -1,1 +1,1 @@
-Publish-Module -Path "$env:OneDriveConsumer\GitHub\Get-WinVer\Get-WinVer" -NuGetApiKey '<API Key>'
+Publish-Module -Path "$env:OneDriveConsumer\GitHub\Get-WinVer\Get-WinVer" -NuGetApiKey 'oy2jh2dnk4wvarnwwv3aopjdo4l4tmbuxivha53cwqchm4'
