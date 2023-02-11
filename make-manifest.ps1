@@ -1,0 +1,1 @@
+New-ModuleManifest -Path .\Get-WinVer.psd1 -ModuleVersion 1.1 -Author smagee -FunctionsToExport Get-WinVer
