@@ -12,7 +12,7 @@
 RootModule = 'Get-WinVer.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.1.4'
+ModuleVersion = '1.1.5'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -98,10 +98,10 @@ PrivateData = @{
         # Tags = @()
 
         # A URL to the license for this module.
-        # LicenseUri = 'https://github.com/samtmagee/Get-WinVer/blob/main/LICENSE.md'
+        LicenseUri = 'https://github.com/samtmagee/Get-WinVer/blob/main/LICENSE.md'
 
         # A URL to the main website for this project.
-        # ProjectUri = 'https://github.com/samtmagee/Get-WinVer/'
+        ProjectUri = 'https://github.com/samtmagee/Get-WinVer/'
 
         # A URL to an icon representing this module.
         # IconUri = ''
